@@ -80,16 +80,16 @@ export const ProfilesTab = () => {
     if (profile.profile_picture_urls && profile.profile_picture_urls.length > 0) {
       const signedUrls = await Promise.all(
         profile.profile_picture_urls.map(async (url: string) => {
-          const urlParts = url.split('/');
-          const fileName = urlParts[urlParts.length - 1];
-          const bucketPath = `profile-pictures/${fileName}`;
-          
+          const pathMatch = url.match(/\/profile-pictures\/(.+)$/);
+          const path = pathMatch?.[1];
+          console.log(path)
           const { data } = await supabase.storage
             .from('profile-pictures')
-            .createSignedUrl(bucketPath, 3600);
-            return data?.signedUrl || '';
-          })
+            .createSignedUrl(path, 3600);
+          return data?.signedUrl || '';
+        })
       );
+      console.log(signedUrls)
       setProfileImages(signedUrls.filter(Boolean));
     } else {
       setProfileImages([]);
