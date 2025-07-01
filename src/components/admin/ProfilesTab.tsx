@@ -80,12 +80,15 @@ export const ProfilesTab = () => {
     if (profile.profile_picture_urls && profile.profile_picture_urls.length > 0) {
       const signedUrls = await Promise.all(
         profile.profile_picture_urls.map(async (url: string) => {
-          const fileName = url.split('/').pop();
+          const urlParts = url.split('/');
+          const fileName = urlParts[urlParts.length - 1];
+          const bucketPath = `profile-pictures/${fileName}`;
+          
           const { data } = await supabase.storage
             .from('profile-pictures')
-            .createSignedUrl(fileName, 3600);
-          return data?.signedUrl || '';
-        })
+            .createSignedUrl(bucketPath, 3600);
+            return data?.signedUrl || '';
+          })
       );
       setProfileImages(signedUrls.filter(Boolean));
     } else {
