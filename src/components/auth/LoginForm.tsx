@@ -98,7 +98,7 @@ export const LoginForm = () => {
                     variant="link" 
                     className="text-sm"
                   >
-                    <a href="https://avyo-signup.netlify.app/password-reset">Forgot your password?</a>
+                    <a target="_blank" href="https://avyo-signup.netlify.app/password-reset">Forgot your password?</a>
                   </Button>
                   {/* <Button 
                     type="button" 
