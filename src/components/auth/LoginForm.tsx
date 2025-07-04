@@ -96,19 +96,18 @@ export const LoginForm = () => {
                   <Button 
                     type="button" 
                     variant="link" 
-                    onClick={() => setCurrentView('reset')}
                     className="text-sm"
                   >
-                    Forgot your password?
+                    <a href="https://avyo-signup.netlify.app/password-reset">Forgot your password?</a>
                   </Button>
-                  <Button 
+                  {/* <Button 
                     type="button" 
                     variant="link" 
                     onClick={() => setCurrentView('magic')}
                     className="text-sm"
                   >
                     Sign in with magic link
-                  </Button>
+                  </Button> */}
                 </div>
               </form>
             </CardContent>
