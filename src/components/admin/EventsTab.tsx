@@ -9,10 +9,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
-import { Plus, Edit, Trash2, Calendar, MapPin } from 'lucide-react';
+import { Plus, Edit, Trash2, Calendar, MapPin, Share2, Copy, QrCode } from 'lucide-react';
+import QRCode from 'qrcode';
 
 export const EventsTab = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<any>(null);
+  const [qrCodeUrl, setQrCodeUrl] = useState('');
   const [editingEvent, setEditingEvent] = useState<any>(null);
   const [formData, setFormData] = useState({
     title: '',
@@ -149,6 +153,26 @@ export const EventsTab = () => {
     }
   };
 
+  const handleShare = async (event: any) => {
+    setSelectedEvent(event);
+    const eventUrl = `https://avyo-signup.netlify.dev?eventId=${event.id}`;
+    
+    try {
+      const qrCodeDataUrl = await QRCode.toDataURL(eventUrl);
+      setQrCodeUrl(qrCodeDataUrl);
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+    }
+    
+    setIsShareDialogOpen(true);
+  };
+
+  const copyToClipboard = () => {
+    const eventUrl = `https://avyo-signup.netlify.dev?eventId=${selectedEvent?.id}`;
+    navigator.clipboard.writeText(eventUrl);
+    toast({ title: 'Link copied to clipboard!' });
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString();
   };
@@ -233,6 +257,39 @@ export const EventsTab = () => {
         </Dialog>
       </div>
 
+      {/* Share Event Dialog */}
+      <Dialog open={isShareDialogOpen} onOpenChange={setIsShareDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Share Event: {selectedEvent?.title}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Event Link</Label>
+              <div className="flex space-x-2">
+                <Input
+                  value={`https://avyo-signup.netlify.dev?eventId=${selectedEvent?.id}`}
+                  readOnly
+                  className="text-sm"
+                />
+                <Button size="sm" onClick={copyToClipboard}>
+                  <Copy className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+            
+            {qrCodeUrl && (
+              <div className="text-center">
+                <Label>QR Code</Label>
+                <div className="mt-2">
+                  <img src={qrCodeUrl} alt="Event QR Code" className="mx-auto" />
+                </div>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {events?.map((event) => (
           <Card key={event.id}>
@@ -257,6 +314,9 @@ export const EventsTab = () => {
                 <div className="flex space-x-2 pt-2">
                   <Button size="sm" variant="outline" onClick={() => handleEdit(event)}>
                     <Edit className="w-4 h-4" />
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => handleShare(event)}>
+                    <Share2 className="w-4 h-4" />
                   </Button>
                   <Button
                     size="sm"
