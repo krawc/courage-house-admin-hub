@@ -155,7 +155,7 @@ export const EventsTab = () => {
 
   const handleShare = async (event: any) => {
     setSelectedEvent(event);
-    const eventUrl = `https://avyo-signup.netlify.dev?eventId=${event.id}`;
+    const eventUrl = `https://avyo-signup.netlify.app?eventId=${event.id}`;
     
     try {
       const qrCodeDataUrl = await QRCode.toDataURL(eventUrl);
@@ -168,7 +168,7 @@ export const EventsTab = () => {
   };
 
   const copyToClipboard = () => {
-    const eventUrl = `https://avyo-signup.netlify.dev?eventId=${selectedEvent?.id}`;
+    const eventUrl = `https://avyo-signup.netlify.app?eventId=${selectedEvent?.id}`;
     navigator.clipboard.writeText(eventUrl);
     toast({ title: 'Link copied to clipboard!' });
   };
@@ -268,7 +268,7 @@ export const EventsTab = () => {
               <Label>Event Link</Label>
               <div className="flex space-x-2">
                 <Input
-                  value={`https://avyo-signup.netlify.dev?eventId=${selectedEvent?.id}`}
+                  value={`https://avyo-signup.netlify.app?eventId=${selectedEvent?.id}`}
                   readOnly
                   className="text-sm"
                 />
